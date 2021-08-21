@@ -10,6 +10,8 @@ fun Application.configureRouting() {
         getRoot()
         getEtcName()
         getTxParam()
+        orderAuditor()
+
     }
 }
 
