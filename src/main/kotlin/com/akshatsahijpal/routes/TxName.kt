@@ -8,5 +8,6 @@ fun Route.getTxParam(){
     get("/tx/{param...}") {
         val params = call.parameters.getAll("param") as List<String>
         call.respondText("Res: $params")
+
     }
 }
