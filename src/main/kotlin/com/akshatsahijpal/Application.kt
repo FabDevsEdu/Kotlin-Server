@@ -3,6 +3,7 @@ package com.akshatsahijpal
 import com.akshatsahijpal.locations.AuditOrder
 import com.akshatsahijpal.routes.configureRouting
 import io.ktor.application.*
+import io.ktor.features.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.http.*
@@ -18,4 +19,20 @@ fun main() {
 }
 fun Application.module() {
     install(Locations) {}
+    install(StatusPages) {
+        exception<NotFoundException> { cause ->
+           // call.respond(HttpStatusCode.NotFound)
+            call.respondRedirect("/error", permanent = true)
+        //    throw cause
+        }
+        exception<Throwable> { cause ->
+            call.respond(HttpStatusCode.InternalServerError)
+            throw cause
+        }
+    }
+    routing {
+        get("/error"){
+            call.respondText("404 Page Not Found :(")
+        }
+    }
 }
