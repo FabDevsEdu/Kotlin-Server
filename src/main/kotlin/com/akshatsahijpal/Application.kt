@@ -2,39 +2,23 @@ package com.akshatsahijpal
 
 import io.ktor.application.*
 import io.ktor.features.*
-import io.ktor.html.*
 import io.ktor.http.*
 import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.serialization.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import kotlinx.html.body
-import kotlinx.html.h1
-import kotlinx.html.head
-import kotlinx.html.title
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "127.0.0.1") {
         module()
-        routing {
-            var name = "Root"
-            get("/") {
-                call.respondHtml(HttpStatusCode.OK) {
-                    head {
-                        title {
-                            +name
-                        }
-                    }
-                    body {
-                        h1{
-                           +"Root Location "
-                        }
-                    }
-                }
-            }
-        }
     }.start(wait = true)
 }
+
+@Serializable
+data class Customer(val id: Int, val firstName: String, val lastName: String)
+
 
 fun Application.module() {
     install(StatusPages) {
@@ -47,5 +31,11 @@ fun Application.module() {
             call.respond(HttpStatusCode.InternalServerError)
             throw cause
         }
+    }
+    install(ContentNegotiation) {
+        json(Json {
+            prettyPrint = true
+            isLenient = true
+        })
     }
 }
